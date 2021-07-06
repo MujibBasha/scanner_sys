@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:scanner_qr_sys/barecode_scan_page.dart';
 import 'package:scanner_qr_sys/render_barcode_page.dart';
 import 'package:scanner_qr_sys/scanner.dart';
+import "package:firebase_core/firebase_core.dart";
 
-void main() {
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
