@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "948922279714",
+    "project_id": "employees-attendance-sys",
+    "storage_bucket": "employees-attendance-sys.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948922279714:android:f5d8e0c0687701395ee77b",
+        "android_client_info": {
+          "package_name": "com.lightmoonstudioo.employee_attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948922279714-2s142no4vc4g9ap0kovv4epvnobbhhh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm9A6OhjXXzBw2MOQvq3dqbLuo4A4FARk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948922279714-2s142no4vc4g9ap0kovv4epvnobbhhh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948922279714:android:657a4279a25a0de65ee77b",
+        "android_client_info": {
+          "package_name": "com.lightmoonstudioo.scanner_attendance.scanner_qr_sys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948922279714-2s142no4vc4g9ap0kovv4epvnobbhhh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm9A6OhjXXzBw2MOQvq3dqbLuo4A4FARk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948922279714-2s142no4vc4g9ap0kovv4epvnobbhhh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
