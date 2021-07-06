@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gsheets/gsheets.dart';
 import 'package:scanner_qr_sys/sheet_model/user.dart';
+import 'package:intl/intl.dart';
 
 class UserSheetsApi {
   static const _credentials = r'''
@@ -34,10 +35,17 @@ class UserSheetsApi {
 
     // final firstRow = UserFields.getFields();
     // _userSheet.values.insertRow(1, firstRow);
-    print("_______________________");
+
  // await addCompanyInfo(["Libyan Telecom Company","Libya/Tripoli","(09X) XXX-XXXX","https://www.libyana.ly"]);//TODO Done
      //await addGeneralInfo(userData); //TODO Done
-    await _userSheet.values.insertValue("07/06/2021"??"",column:8,row: 12);
+ //TODO Done  //use this for one time when first time  scanner
+    DateTime date = DateTime.now().add(Duration(hours: 1));
+   // await addData(date);// TODO Done
+    print("______________+++++++++++++++_________");
+print(DateFormat('h:mm a')..format(date));
+//Time in your timezone TODO yet add 1 hour
+//     print(DateTime.now().timeZoneName);
+
     //TODO show dilog if success
     //     , row: 4);
     //   [
@@ -80,9 +88,45 @@ class UserSheetsApi {
     await _userSheet.values.insertColumn(1,columnList ,fromRow: 3);
   }
 
-  static Future addData (List<Map<String, dynamic>> rowList) async {
-    // if(_userSheet == null)=>return ;
+  static Future addData (DateTime date) async {
+    if(_userSheet == null)return ;
 
+    //add the date for first time scnner
+
+    if(_userSheet.values.value(column:8,row: 4) == null  )
+      {
+        await _userSheet.values.insertValue(DateFormat.yMd().format(date),column:8,row: 12);//('MMM/d/yyyy') //"07/06/2021"??""
+      }
+
+
+    String dateFormat = DateFormat('EEEE').format(date);
+
+    //check if employee check in or check out
+    bool isIn=true;
+    switch(dateFormat){
+      case("Tuesday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 15);
+        break;
+      case("Wednesday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 16);
+        break;
+      case("Thursday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 17);
+        break;
+      case("Friday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 18);
+        break;
+      case("SaturDay"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 19);
+        break;
+      case("Sunday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 20);
+        break;
+      case("Monday"):
+        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 21);
+        break;
+
+    }
     // return await _userSheet.values.map.appendRows(rowList);
   }
 
