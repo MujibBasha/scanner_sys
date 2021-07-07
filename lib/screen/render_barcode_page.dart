@@ -17,31 +17,39 @@ class _RenderBarcodePageState extends State<RenderBarcodePage> {
 
 
   Timer timer;
-  String pas="hdsgvu26t6t#@";
+  String pas;
+
+  Future<void> getPassword()async {
+    pas= generatePassword();
+    await DataBase().updatePassword(password:pas );
+  }
 
   @override
   void initState() {
-    try {
+    getPassword();
+    print(pas);
+    timer = Timer.periodic(
+      Duration(hours: 1),
+          (timer)async {
+        print("call");
+        getPassword();
+        print(pas);
 
-      timer = Timer.periodic(
-        Duration(seconds: 30),
-            (timer)async {
-          setState(() {
-            print("call");
-            pas= generatePassword();
-            print(pas);
+        setState(() {
 
-          });
-          await DataBase().updatePassword(password:pas );
+        });
+      },
+    );
 
-        },
-      );
-    } catch (e) {
-      print(e);
-      setState(() {
-
-      });
-    }
+    // try {
+    //
+    //
+    // } catch (e) {
+    //   print(e);
+    //   setState(() {
+    //
+    //   });
+    // }
     super.initState();
   }
 
@@ -66,7 +74,7 @@ class _RenderBarcodePageState extends State<RenderBarcodePage> {
             color:Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: BarcodeWidget(
+              child: pas==null?CircularProgressIndicator():BarcodeWidget(
                 data: pas,
                 barcode: Barcode.qrCode(),
                 width: 350,
