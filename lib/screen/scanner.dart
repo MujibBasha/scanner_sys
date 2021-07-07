@@ -53,8 +53,8 @@ Future<bool> updateWorkSheet(User newUser)async{
     this.controller = controller;
     controller.scannedDataStream.listen(( scanData) async {
       controller.pauseCamera();
+
       if (scanData != null ) {
-        
 
         userData=await checkUser(isCustomer:scanData.code.contains("cus"),response:scanData);
 

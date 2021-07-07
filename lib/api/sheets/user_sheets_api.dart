@@ -33,30 +33,25 @@ class UserSheetsApi {
 
     _userSheet = await _getWorkSheet(spreadsheet, title: "${userData[UserFields.name]}_${userData[UserFields.id]}");
 
-    // final firstRow = UserFields.getFields();
-    // _userSheet.values.insertRow(1, firstRow);
 
- // await addCompanyInfo(["Libyan Telecom Company","Libya/Tripoli","(09X) XXX-XXXX","https://www.libyana.ly"]);//TODO Done
-     //await addGeneralInfo(userData); //TODO Done
- //TODO Done  //use this for one time when first time  scanner
     DateTime date = DateTime.now().add(Duration(hours: 1));
-   // await addData(date);// TODO Done
-    print("______________+++++++++++++++_________");
-print(DateFormat('h:mm a')..format(date));
-//Time in your timezone TODO yet add 1 hour
-//     print(DateTime.now().timeZoneName);
 
-    //TODO show dilog if success
-    //     , row: 4);
-    //   [
-    //     {"id": 12, "email": "mujibbasha@gmail.com"},
-    //     {"name": "XXX", "isBeginner": "com"}
-    //   ],
-    // );
-    // await _userSheet.values.app([
-    //   ["ddddd", "ffff", "fhbfjbf"],
-    //   ["qqq", "wwww", "rrrr"],
-    // ]);
+    //TODO Done  //use this for one time when first time  scanner
+    print("______________+++++++++++++++_________");
+    print( DateFormat('h:mm a').format(date));
+    //bool iosfirstTime=await _userSheet.values.value(column:8,row: 4) == "";
+    // print(iosfirstTime);
+    //
+    // if(iosfirstTime )
+    // {
+    //   print("????????????????? update general info");
+    //   await addData(date);
+    //   await addCompanyInfo(["Libyan Telecom Company","Libya/Tripoli","(09X) XXX-XXXX","https://www.libyana.ly"]);//TODO Done
+    //   await addGeneralInfo(userData); //TODO Done
+    // }
+    print("?????????????????" );
+    await update(date);// TODO Done
+
   }
 
   static Future<Worksheet> _getWorkSheet(Spreadsheet spreadsheet,
@@ -89,45 +84,51 @@ print(DateFormat('h:mm a')..format(date));
   }
 
   static Future addData (DateTime date) async {
+    if (_userSheet == null) return;
+
+
+    await _userSheet.values.insertValue(DateFormat.yMd().format(date),column:8,row: 12);//('MMM/d/yyyy') //"07/06/2021"??""
+
+  }
+
+  static Future update (DateTime date) async {
     if(_userSheet == null)return ;
 
-    //add the date for first time scnner
-
-    if(_userSheet.values.value(column:8,row: 4) == null  )
-      {
-        await _userSheet.values.insertValue(DateFormat.yMd().format(date),column:8,row: 12);//('MMM/d/yyyy') //"07/06/2021"??""
-      }
-
-
-    String dateFormat = DateFormat('EEEE').format(date);
+    String dateFormat = DateFormat('EEEE').format(date).toString();
 
     //check if employee check in or check out
-    bool isIn=true;
+    bool isIn=true; //TODO use diloge or Ai to check if in or out
+    bool partTwo=false;
+
+   print(dateFormat);
+
     switch(dateFormat){
       case("Tuesday"):
         await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 15);
         break;
       case("Wednesday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 16);
+        print("fuckypo");
+        bool state=await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 16);
+        print("$state");
         break;
       case("Thursday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 17);
+        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 17);
         break;
       case("Friday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 18);
+        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 18);
         break;
       case("SaturDay"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 19);
+        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 19);
         break;
       case("Sunday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 20);
+        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 20);
         break;
       case("Monday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 21);
+        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 21);
         break;
 
     }
-    // return await _userSheet.values.map.appendRows(rowList);
+
   }
 
   static Future insert(List<Map<String, dynamic>> rowList) async {
