@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:scanner_qr_sys/screen/render_barcode_page.dart';
 
 import 'package:scanner_qr_sys/screen/scanner.dart';
 import "package:firebase_core/firebase_core.dart";
@@ -46,7 +47,7 @@ class _BottomBarState extends State<BottomBar> {
 
   List<Map<String, Widget>> _pages  =
       [
-        {  "page":Container(),},
+        {  "page":RenderBarcodePage(),},
 {  "page":Scanner()},
 
       ];

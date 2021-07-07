@@ -19,11 +19,23 @@ class DataBase {
   //   // }
   // }
 
-
-  Future<DocumentSnapshot> getEmployeeInfo({bool isEmployee,String userId}) async {
-
- return FirebaseFirestore.instance.collection(isEmployee?"employees":"customers").doc("$userId").get(); //{userId.replaceAll("from", replace)}
+  Future<DocumentSnapshot> getEmployeeInfo(
+      {bool isEmployee, String userId}) async {
+    return FirebaseFirestore.instance
+        .collection(isEmployee ? "employees" : "customers")
+        .doc("$userId")
+        .get(); //{userId.replaceAll("from", replace)}
   }
+
+  Future<void> updatePassword({String password}) async {
+    await FirebaseFirestore.instance
+        .collection("generated_password")
+        .doc("generated_password")
+        .set({
+      "password": "$password",
+    }); //{userId.replaceAll("from", replace)}
+  }
+
 
   Future<bool> addUserInfo({Map userInfoMap, String userId}) async {
     try {
