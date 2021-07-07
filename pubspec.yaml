@@ -46,6 +46,7 @@ dependencies:
   flutter_svg: ^0.22.0
   flutter_icons: ^1.1.0
   flutter_screenutil: ^5.0.0+2
+  barcode_widget: ^2.0.1
 
 dev_dependencies:
   flutter_test:
