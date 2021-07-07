@@ -12,7 +12,9 @@ String generatePassword(){
   chars +="$lettersLowerCase$letterSUppercase";
   chars +="$numbers";
   chars +="$special";
-  return List.generate(lengeure().nextInt(chars.length);
+  return List.generate(lenght, (index) {
+
+    final indexRandom = Random.secure().nextInt(chars.length);
     return chars[indexRandom];
   }).join("");
 }
