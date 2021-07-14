@@ -26,17 +26,16 @@ class _ScannerState extends State<Scanner> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Scanner"),
-      ),
+
       body: QRView(
 
         cameraFacing: CameraFacing.back,
         key: qrKey,
         onQRViewCreated: _onQRViewCreated,
+
         formatsAllowed: [BarcodeFormat.qrcode],
-        overlay:QrScannerOverlayShape(borderColor: Colors.blueAccent) ,
-overlayMargin: EdgeInsets.only(left: 12),
+        overlay:QrScannerOverlayShape(borderColor: Color(0XFFcbead6),borderRadius:5) ,
+
       ),
     );
   }

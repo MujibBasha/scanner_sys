@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:io';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scanner_qr_sys/constants.dart';
@@ -14,6 +16,7 @@ import 'package:printing/printing.dart';
 //
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:scanner_qr_sys/service/database.dart';
 //
 
 class RenderBarcodePage extends StatefulWidget {
@@ -28,11 +31,19 @@ class GenerateScreenState extends State<RenderBarcodePage> {
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController idCardNumberController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
 
   GlobalKey globalKey = new GlobalKey();
   String _dataString = "Hello from this QR";
-  String _inputErrorText;
+  String customerID="Hello_from_this_QR";
   final TextEditingController _textController = TextEditingController();
+
+  void clearTextController()
+  {
+    usernameController.clear();
+    idCardNumberController.clear();
+    phoneNumberController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +83,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
     Uint8List pngBytes = byteData.buffer.asUint8List();
 
     final tempDir = await getTemporaryDirectory();
-    final File file = await new File('${tempDir.path}/image.png').create();
+    final File file = await new File('${tempDir.path}/$customerID.png').create();
     await file.writeAsBytes(pngBytes);
 
     final loadImage = pw.MemoryImage(
@@ -88,6 +99,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
           ); // Center
         }));
     await Printing.layoutPdf(
+      name: customerID,
         format: PdfPageFormat.a6,
         onLayout: (PdfPageFormat format) async => doc.save());
   }
@@ -136,44 +148,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                   physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.only(
-                    //     top: _topSectionTopPadding,
-                    //     left: 20.0,
-                    //     right: 10.0,
-                    //     bottom: _topSectionBottomPadding,
-                    //   ),
-                    //   child:  Container(
-                    //     height: _topSectionHeight,
-                    //     child:  Row(
-                    //       mainAxisSize: MainAxisSize.max,
-                    //       crossAxisAlignment: CrossAxisAlignment.stretch,
-                    //       children: <Widget>[
-                    //         Expanded(
-                    //           child:  TextField(
-                    //             controller: _textController,
-                    //             decoration:  InputDecoration(
-                    //               hintText: "Enter a custom message",
-                    //               errorText: _inputErrorText,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //         Padding(
-                    //           padding: const EdgeInsets.only(left: 10.0),
-                    //           child:  InkWell(
-                    //             child:  Text("SUBMIT"),
-                    //             onTap: () {
-                    //               setState((){
-                    //                 _dataString = _textController.text;
-                    //                 _inputErrorText = null;
-                    //               });
-                    //             },
-                    //           ),
-                    //         )
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
+
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
                       padding:
@@ -181,7 +156,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                       width: size.width * 0.9,
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black45,
                         ),
                         validator: (value) {
                           var newValue = value.trimLeft();
@@ -200,7 +175,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         decoration: new InputDecoration(
                           icon: Icon(
                             Icons.perm_identity_outlined,
-                            color: Colors.grey.shade900,
+                            color: Color(0XFFcbead6), //Colors.grey.shade900,
                           ),
                           labelText: "username",
 
@@ -216,51 +191,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         ),
                       ),
                     ),
-                    // Container(
-                    //   margin: EdgeInsets.symmetric(vertical: 10),
-                    //   padding: EdgeInsets.symmetric(
-                    //       horizontal: 15, vertical: 5),
-                    //   width: size.width * 0.9,
-                    //
-                    //   child: TextFormField(
-                    //     obscureText: true,
-                    //     style: TextStyle(
-                    //       color: Colors.black45,
-                    //     ),
-                    //     validator: (value) {
-                    //       var newValue = value.trimLeft();
-                    //       if (newValue.isEmpty) {
-                    //         return "this section is required";
-                    //       } else if (newValue.length != 12) {
-                    //         return "this section is required,Please Provide ID number with 12 character";
-                    //       } else {
-                    //         return null;
-                    //       }
-                    //     },
-                    //     // // onChanged: onChanged,
-                    //     controller: nationalIDController,
-                    //     keyboardType: TextInputType.text,
-                    //     cursorColor: kPrimaryColor,
-                    //
-                    //     decoration: new InputDecoration(
-                    //       icon: Icon(Entypo.newsletter,color: Colors.grey.shade900,),
-                    //       labelText: "National ID",
-                    //
-                    //       fillColor: Colors.black,
-                    //       border: new OutlineInputBorder(
-                    //
-                    //         borderRadius: new BorderRadius.circular(25.0),
-                    //         borderSide: new BorderSide(
-                    //
-                    //           color: Colors.white70,
-                    //           // style:
-                    //
-                    //         ),
-                    //       ),
-                    //       //fillColor: Colors.green
-                    //     ),
-                    //   ),
-                    // ),
+
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       width: size.width * 0.9,
@@ -285,15 +216,10 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         decoration: new InputDecoration(
                           icon: Icon(
                             Icons.credit_card_outlined,
-                            color: Colors.grey.shade900,
+                            color: Color(0XFFcbead6), // Colors.grey.shade900,
                           ),
                           labelText: "ID Card Number",
-//focusColor: Colors.grey.shade900,
-//                                 hoverColor:Colors.green ,
-//                                 focusColor: Colors.yellowAccent,
-//
-
-                          fillColor: Colors.black,
+          fillColor: Colors.black,
                           border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
                             borderSide: new BorderSide(
@@ -323,20 +249,15 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                           }
                         },
                         // // onChanged: onChanged,
-                        controller: idCardNumberController,
+                        controller: phoneNumberController,
                         keyboardType: TextInputType.text,
                         cursorColor: kPrimaryColor,
                         decoration: new InputDecoration(
                           icon: Icon(
-                            Icons.credit_card_outlined,
-                            color: Colors.grey.shade900,
+                            Icons.contact_phone,
+                            color: Color(0XFFcbead6),
                           ),
-                          labelText: "ID Card Number",
-//focusColor: Colors.grey.shade900,
-//                                 hoverColor:Colors.green ,
-//                                 focusColor: Colors.yellowAccent,
-//
-
+                          labelText: "Phone Number",
                           fillColor: Colors.black,
                           border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
@@ -349,101 +270,80 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         ),
                       ),
                     ),
-//                     Container(
-//                       margin: EdgeInsets.symmetric(vertical: 20),
-//                       width: size.width * 0.9,
-//                       child: TextFormField(
-//                         style: TextStyle(
-//                           color: Colors.black45,
-//                         ),
-//                         validator: (value) {
-//                           var newValue = value.trimLeft();
-//                           if (newValue.isEmpty) {
-//                             return "this section is required";
-//                           } else if (newValue.length < 4) {
-//                             return "this section is required,Please Provide Id Card Number  with 4+ character";
-//                           } else {
-//                             return null;
-//                           }
-//                         },
-//                         // // onChanged: onChanged,
-//                         controller: idCardNumberController,
-//                         keyboardType: TextInputType.text,
-//                         cursorColor: kPrimaryColor,
-//                         decoration: new InputDecoration(
-//                           icon: Icon(
-//                             Icons.credit_card_outlined,
-//                             color: Colors.grey.shade900,
-//                           ),
-//                           labelText: "ID Card Number",
-// //focusColor: Colors.grey.shade900,
-// //                                 hoverColor:Colors.green ,
-// //                                 focusColor: Colors.yellowAccent,
-// //
-//
-//                           fillColor: Colors.black,
-//                           border: new OutlineInputBorder(
-//                             borderRadius: new BorderRadius.circular(25.0),
-//                             borderSide: new BorderSide(
-//                               color: Colors.teal,
-//                               // style:
-//                             ),
-//                           ),
-//                           //fillColor: Colors.green
-//                         ),
-//                       ),
-//                     ),
-//                     Container(
-//                       margin: EdgeInsets.symmetric(vertical: 20),
-//                       width: size.width * 0.9,
-//                       child: TextFormField(
-//                         style: TextStyle(
-//                           color: Colors.black45,
-//                         ),
-//                         validator: (value) {
-//                           var newValue = value.trimLeft();
-//                           if (newValue.isEmpty) {
-//                             return "this section is required";
-//                           } else if (newValue.length < 4) {
-//                             return "this section is required,Please Provide Id Card Number  with 4+ character";
-//                           } else {
-//                             return null;
-//                           }
-//                         },
-//                         // // onChanged: onChanged,
-//                         controller: idCardNumberController,
-//                         keyboardType: TextInputType.text,
-//                         cursorColor: kPrimaryColor,
-//                         decoration: new InputDecoration(
-//                           icon: Icon(
-//                             Icons.credit_card_outlined,
-//                             color: Colors.grey.shade900,
-//                           ),
-//                           labelText: "ID Card Number",
-// //focusColor: Colors.grey.shade900,
-// //                                 hoverColor:Colors.green ,
-// //                                 focusColor: Colors.yellowAccent,
-// //
-//
-//                           fillColor: Colors.black,
-//                           border: new OutlineInputBorder(
-//                             borderRadius: new BorderRadius.circular(25.0),
-//                             borderSide: new BorderSide(
-//                               color: Colors.teal,
-//                               // style:
-//                             ),
-//                           ),
-//                           //fillColor: Colors.green
-//                         ),
-//                       ),
-//                     ),
 
                     Padding(
-                      padding: const EdgeInsets.only(left: 20.0,right:20.0,bottom: 40),
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, bottom: 40),
                       child: Material(
                         color: Colors.teal,
                         borderRadius: BorderRadius.circular(32),
                         child: InkWell(
+                          onTap: () async {
+                            FocusScope.of(context).unfocus();
+                            DateTime date =
+                                DateTime.now().add(Duration(hours: 1));
+
+
+                            Map<String, Object> customerData = {
+                              "name": usernameController.text,
+                              "phone_number": phoneNumberController.text,
+                              "id_card_number": idCardNumberController.text,
+                              "date":"${DateFormat('M/d/y').format(date)}",
+                            };
+
+ customerID="${usernameController.text}_${idCardNumberController.text}";
+
+                            await DataBase()
+                                .addCustomerInfo(
+                                    customerInfoMap: customerData,
+                                    customerId:customerID??"SDsds90ieijo3j",
+                                        )
+                                .then((state) {
+                             if(state){
+                               setState(() {
+                                 _dataString = customerID;
+                                 AwesomeDialog(
+                                   btnOkColor: Color(0XFFcbead6),// Colors.black,
+                                   dialogBackgroundColor: Colors.white,
+                                   dismissOnTouchOutside: false,
+                                   isDense: true,
+                                   context: context,
+                                   dialogType: DialogType.SUCCES,
+                                   animType: AnimType.BOTTOMSLIDE,
+                                   title: 'Success',
+                                   desc: 'QR Code is Created successful',
+                                   btnOkIcon: Icons.local_print_shop_outlined,
+                                   btnOkText: "print QR",
+                                   btnOkOnPress: () {
+                                     clearTextController();
+                                     Navigator.pop(context);
+                                     _captureAndSharePng();
+                                   },
+                                 )..show();
+
+                               });
+                             }else{
+                               AwesomeDialog(
+                                 btnOkColor: Colors.redAccent,// Colors.black,
+                                 dialogBackgroundColor: Colors.white,
+                                 dismissOnTouchOutside: false,
+                                 isDense: true,
+                                 context: context,
+                                 dialogType: DialogType.ERROR,
+                                 animType: AnimType.BOTTOMSLIDE,
+                                 title: 'Error',
+                                 desc: 'Please Try again',
+                                 btnOkIcon: Icons.local_print_shop_outlined,
+                                 btnOkText: "ok",
+                                 btnOkOnPress: () {
+                                   clearTextController();
+                                   Navigator.pop(context);
+
+                                 },
+                               )..show();
+                             }
+                            });
+                          },
                           borderRadius: BorderRadius.circular(32),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20.0),
