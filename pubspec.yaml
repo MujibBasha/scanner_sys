@@ -47,6 +47,14 @@ dependencies:
   flutter_icons: ^1.1.0
   flutter_screenutil: ^5.0.0+2
   barcode_widget: ^2.0.1
+  circular_countdown: ^2.1.0
+  path_provider: ^2.0.2
+  #barcode_scan: ^0.0.4
+  qr_flutter: ^4.0.0
+#  share: ^2.0.4
+  printing: ^5.4.3
+
+
 
 dev_dependencies:
   flutter_test:

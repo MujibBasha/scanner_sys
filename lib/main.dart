@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:scanner_qr_sys/screen/barcode_generator.dart';
 import 'package:scanner_qr_sys/screen/render_barcode_page.dart';
 
 import 'package:scanner_qr_sys/screen/scanner.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -46,9 +48,10 @@ class _BottomBarState extends State<BottomBar> {
   int currentIndex=0;
 
   List<Map<String, Widget>> _pages  =
-      [
+      [  {  "page":BarcodeGenerator()},
+        {  "page":Scanner()},
         {  "page":RenderBarcodePage(),},
-{  "page":Scanner()},
+
 
       ];
 
@@ -63,20 +66,69 @@ class _BottomBarState extends State<BottomBar> {
     return Scaffold(
 
       body: _pages[currentIndex]["page"],
-      bottomNavigationBar: BottomAppBar(
-        child:BottomNavigationBar(
-          onTap: update_pages,
-          currentIndex: this.currentIndex,
-          selectedItemColor: Colors.orangeAccent,
-          unselectedItemColor: Colors.orange,
-          showSelectedLabels: true,
-            showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.scanner),label: "Scanner",
 
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.drive_file_rename_outline),label: "Render"),
-          ],
+      floatingActionButtonLocation:
+      FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(1.0),
+        child: Material(
+
+          shadowColor: Color(0XFF4daa9d),
+          elevation: 6,
+          borderRadius: BorderRadius.circular(28),
+          child: FloatingActionButton(
+
+            focusColor: Color(0XFF4daa9d),
+            backgroundColor: Color(0XFF4daa9d),
+            tooltip: 'scanner',
+            elevation: 0,
+            child: Image.asset("assets/images/scann_button.jpeg",filterQuality:FilterQuality.none  ,),
+            onPressed: () {
+              setState(() {
+                currentIndex=1;
+              });
+            },
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+
+          notchMargin: 6,
+          clipBehavior: Clip.antiAlias,
+          shape: CircularNotchedRectangle(),
+        child:Container(
+          clipBehavior: Clip.antiAlias,
+
+          height: kBottomNavigationBarHeight,
+          decoration: BoxDecoration(
+
+              border: Border(
+
+                top: BorderSide(width: 0.7,color: Color(0XFFcbead6),),
+              )),
+          child: BottomNavigationBar(
+
+            elevation: 0,
+            onTap: update_pages,
+            currentIndex: this.currentIndex,
+            selectedItemColor: Color(0XFF4daa9d),
+            unselectedItemColor: Color(0XFFcbead6),
+            showSelectedLabels: true,
+              showUnselectedLabels: false,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.qr_code_scanner_outlined),
+                tooltip: 'Home',
+                label: 'Home',
+              ),
+             // BottomNavigationBarItem(icon: Icon(Icons.scanner),label: "Scanner",
+
+
+              BottomNavigationBarItem(icon: Icon(null),label: "scanner"),
+
+              BottomNavigationBarItem(icon: Icon(Icons.drive_file_rename_outline),label: "Render"),
+            ],
+          ),
         )
       ),
     );
@@ -84,54 +136,3 @@ class _BottomBarState extends State<BottomBar> {
   }
 }
 
-//
-// //TODO part two
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:scanner_qr_sys/pages/request_service_flow.dart';
-// import 'package:scanner_qr_sys/utils/constants.dart';
-// import 'package:scanner_qr_sys/pages/home.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ScreenUtilInit(
-//       designSize: Size(375, 812),
-//       builder: () => MaterialApp(
-//         debugShowCheckedModeBanner: false,
-//         title: 'Flutter Demo',
-//         theme: ThemeData(
-//           primaryColor: Constants.primaryColor,
-//           scaffoldBackgroundColor: Color.fromRGBO(255, 255, 255, 1),
-//           visualDensity: VisualDensity.adaptivePlatformDensity,
-//           textTheme: GoogleFonts.openSansTextTheme(),
-//         ),
-//         initialRoute: "/",
-//         onGenerateRoute: _onGenerateRoute,
-//       ),
-//     );
-//   }
-// }
-//
-// Route<dynamic> _onGenerateRoute(RouteSettings settings) {
-//   switch (settings.name) {
-//     case "/":
-//       return MaterialPageRoute(builder: (BuildContext context) {
-//         return Home();
-//       });
-//     case "/repair-flow":
-//       return MaterialPageRoute(builder: (BuildContext context) {
-//         return RequestServiceFlow();
-//       });
-//     default:
-//       return MaterialPageRoute(builder: (BuildContext context) {
-//         return Home();
-//       });
-//   }
-// }
-//
