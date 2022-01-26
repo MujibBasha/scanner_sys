@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gsheets/gsheets.dart';
-import 'package:scanner_qr_sys/sheet_model/user.dart';
 import 'package:intl/intl.dart';
+import 'package:scanner_qr_sys/sheet_model/user.dart';
 
 class UserSheetsApi {
   static const _credentials = r'''
@@ -31,14 +31,14 @@ class UserSheetsApi {
   static Future init({@required Map userData}) async {
     final spreadsheet = await _gSheets.spreadsheet(_spreadsheetID);
 
-    _userSheet = await _getWorkSheet(spreadsheet, title: "${userData[UserFields.name]}_${userData[UserFields.id]}");
-
+    _userSheet = await _getWorkSheet(spreadsheet,
+        title: "${userData[UserFields.name]}_${userData[UserFields.id]}");
 
     DateTime date = DateTime.now().add(Duration(hours: 1));
 
     //TODO Done  //use this for one time when first time  scanner
     print("______________+++++++++++++++_________");
-    print( DateFormat('h:mm a').format(date));
+    print(DateFormat('h:mm a').format(date));
     //bool iosfirstTime=await _userSheet.values.value(column:8,row: 4) == "";
     // print(iosfirstTime);
     //
@@ -49,9 +49,8 @@ class UserSheetsApi {
     //   await addCompanyInfo(["Libyan Telecom Company","Libya/Tripoli","(09X) XXX-XXXX","https://www.libyana.ly"]);//TODO Done
     //   await addGeneralInfo(userData); //TODO Done
     // }
-    print("?????????????????" );
-    await update(date);// TODO Done
-
+    print("?????????????????");
+    await update(date); // TODO Done
   }
 
   static Future<Worksheet> _getWorkSheet(Spreadsheet spreadsheet,
@@ -59,76 +58,97 @@ class UserSheetsApi {
     try {
       //TODO copy exist work sheet using copyWorksheet(title);
 
-      return await spreadsheet.copyWorksheet(  spreadsheet.worksheetByTitle("General"),title);
+      return await spreadsheet.copyWorksheet(
+          spreadsheet.worksheetByTitle("General"), title);
     } catch (e) {
       return spreadsheet.worksheetByTitle(title);
     }
   }
 
-
-
-
-  static Future<void> addGeneralInfo( Map userData) async {
-     if(_userSheet == null) return ;
-
-    await _userSheet.values.insertValue(userData[UserFields.name]??"",column:8,row: 4);
-    await _userSheet.values.insertValue(userData[UserFields.email],column:8,row: 6);
-    await _userSheet.values.insertValue(userData[UserFields.id]??"",column:8,row: 8);
-    await _userSheet.values.insertValue(userData[UserFields.cardID]??"",column:8,row: 9);
-  }
-
-  static Future addCompanyInfo (List<String> columnList) async {
-    if(_userSheet == null) return ;
-
-    await _userSheet.values.insertColumn(1,columnList ,fromRow: 3);
-  }
-
-  static Future addData (DateTime date) async {
+  static Future<void> addGeneralInfo(Map userData) async {
     if (_userSheet == null) return;
 
-
-    await _userSheet.values.insertValue(DateFormat.yMd().format(date),column:8,row: 12);//('MMM/d/yyyy') //"07/06/2021"??""
-
+    await _userSheet.values
+        .insertValue(userData[UserFields.name] ?? "", column: 8, row: 4);
+    await _userSheet.values
+        .insertValue(userData[UserFields.email], column: 8, row: 6);
+    await _userSheet.values
+        .insertValue(userData[UserFields.id] ?? "", column: 8, row: 8);
+    await _userSheet.values
+        .insertValue(userData[UserFields.cardID] ?? "", column: 8, row: 9);
   }
 
-  static Future update (DateTime date) async {
-    if(_userSheet == null)return ;
+  static Future addCompanyInfo(List<String> columnList) async {
+    if (_userSheet == null) return;
 
-    String dateFormat = DateFormat('EEEE').format(date).toString();
+    await _userSheet.values.insertColumn(1, columnList, fromRow: 3);
+  }
 
-    //check if employee check in or check out
-    bool isIn=true; //TODO use diloge or Ai to check if in or out
-    bool partTwo=false;
+  static Future addData(DateTime date) async {
+    if (_userSheet == null) return;
 
-   print(dateFormat);
+    await _userSheet.values.insertValue(DateFormat.yMd().format(date),
+        column: 8, row: 12); //('MMM/d/yyyy') //"07/06/2021"??""
+  }
 
-    switch(dateFormat){
-      case("Tuesday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 15);
-        break;
-      case("Wednesday"):
-        print("fuckypo");
-        bool state=await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 16);
-        print("$state");
-        break;
-      case("Thursday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 17);
-        break;
-      case("Friday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 18);
-        break;
-      case("SaturDay"):
-        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 19);
-        break;
-      case("Sunday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 20);
-        break;
-      case("Monday"):
-        await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 21);
-        break;
+  static Future update(DateTime date) async {
+    if (_userSheet == null) return;
 
-    }
+    bool isIn = true; //TODO use diloge or Ai to check if in or out
+    // bool partTwo = false;
 
+    var creationDate = await _userSheet.values.value(column: 2, row: 35);
+    List<String> list = creationDate.split("/");
+
+    DateTime lastDate = DateTime.parse(
+        "${list[2]}-${int.parse(list[0]) > 9 ? list[0] : "0" + list[0]}-${int.parse(list[1]) > 9 ? list[1] : "0" + list[1]}");
+
+    print("lastDate: $lastDate");
+    print("todayDate: $date");
+
+    int parsedTimeResult = date.difference(lastDate).inDays;
+
+    print(parsedTimeResult);
+
+    await _userSheet.values.insertValue(
+        DateFormat('h:mm:ss a').format(date) ?? "",
+        column: isIn ? 2 : 3,
+        row: 15 + parsedTimeResult);
+
+    //  String dateFormat = DateFormat('EEEE').format(date).toString();
+    //
+    //  //check if employee check in or check out
+    //  bool isIn=true; //TODO use diloge or Ai to check if in or out
+    //  bool partTwo=false;
+    //
+    // print(dateFormat);
+    //
+    //  switch(dateFormat){
+    //    case("Tuesday"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm a').format(date)??"",column:isIn?2:3,row: 15);
+    //      break;
+    //    case("Wednesday"):
+    //      print("fuckypo");
+    //      bool state=await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 16);
+    //      print("$state");
+    //      break;
+    //    case("Thursday"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 17);
+    //      break;
+    //    case("Friday"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 18);
+    //      break;
+    //    case("SaturDay"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 19);
+    //      break;
+    //    case("Sunday"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 20);
+    //      break;
+    //    case("Monday"):
+    //      await _userSheet.values.insertValue(DateFormat('h:mm:ss a').format(date)??"",column:isIn?2:3,row: 21);
+    //      break;
+    //
+    //  }
   }
 
   static Future insert(List<Map<String, dynamic>> rowList) async {

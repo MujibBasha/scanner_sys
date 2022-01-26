@@ -1,21 +1,21 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter/services.dart';
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'dart:io';
+
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:scanner_qr_sys/constants.dart';
-//import 'package:share/share.dart';
-import 'package:printing/printing.dart';
 //
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+//import 'package:share/share.dart';
+import 'package:printing/printing.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:scanner_qr_sys/constants.dart';
 import 'package:scanner_qr_sys/service/database.dart';
 //
 
@@ -35,11 +35,10 @@ class GenerateScreenState extends State<RenderBarcodePage> {
 
   GlobalKey globalKey = new GlobalKey();
   String _dataString = "Hello from this QR";
-  String customerID="Hello_from_this_QR";
+  String customerID = "Hello_from_this_QR";
   final TextEditingController _textController = TextEditingController();
 
-  void clearTextController()
-  {
+  void clearTextController() {
     usernameController.clear();
     idCardNumberController.clear();
     phoneNumberController.clear();
@@ -55,7 +54,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
             Icons.archive_outlined,
             color: Colors.teal,
           ),
-          onPressed: _captureAndSharePng,
+          onPressed: _printPDF,
         ),
         elevation: 0,
         shadowColor: Color(0XFFcbead6),
@@ -67,7 +66,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
               Icons.print,
               color: Colors.teal,
             ),
-            onPressed: _captureAndSharePng,
+            onPressed: _printPDF,
           )
         ],
       ),
@@ -75,7 +74,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
     );
   }
 
-  Future<void> _captureAndSharePng() async {
+  Future<void> _printPDF() async {
     RenderRepaintBoundary boundary =
         globalKey.currentContext.findRenderObject();
     var image = await boundary.toImage();
@@ -83,7 +82,8 @@ class GenerateScreenState extends State<RenderBarcodePage> {
     Uint8List pngBytes = byteData.buffer.asUint8List();
 
     final tempDir = await getTemporaryDirectory();
-    final File file = await new File('${tempDir.path}/$customerID.png').create();
+    final File file =
+        await new File('${tempDir.path}/$customerID.png').create();
     await file.writeAsBytes(pngBytes);
 
     final loadImage = pw.MemoryImage(
@@ -99,7 +99,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
           ); // Center
         }));
     await Printing.layoutPdf(
-      name: customerID,
+        name: customerID,
         format: PdfPageFormat.a6,
         onLayout: (PdfPageFormat format) async => doc.save());
   }
@@ -148,7 +148,6 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                   physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
-
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10),
                       padding:
@@ -191,7 +190,6 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         ),
                       ),
                     ),
-
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       width: size.width * 0.9,
@@ -219,7 +217,7 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                             color: Color(0XFFcbead6), // Colors.grey.shade900,
                           ),
                           labelText: "ID Card Number",
-          fillColor: Colors.black,
+                          fillColor: Colors.black,
                           border: new OutlineInputBorder(
                             borderRadius: new BorderRadius.circular(25.0),
                             borderSide: new BorderSide(
@@ -270,7 +268,6 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                         ),
                       ),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20.0, right: 20.0, bottom: 40),
@@ -283,65 +280,64 @@ class GenerateScreenState extends State<RenderBarcodePage> {
                             DateTime date =
                                 DateTime.now().add(Duration(hours: 1));
 
-
                             Map<String, Object> customerData = {
                               "name": usernameController.text,
                               "phone_number": phoneNumberController.text,
                               "id_card_number": idCardNumberController.text,
-                              "date":"${DateFormat('M/d/y').format(date)}",
+                              "date": "${DateFormat('M/d/y').format(date)}",
                             };
 
- customerID="${usernameController.text}_${idCardNumberController.text}";
+                            customerID =
+                                "${usernameController.text}_${idCardNumberController.text}";
 
                             await DataBase()
                                 .addCustomerInfo(
-                                    customerInfoMap: customerData,
-                                    customerId:customerID??"SDsds90ieijo3j",
-                                        )
+                              customerInfoMap: customerData,
+                              customerId: customerID ?? "SDsds90ieijo3j",
+                            )
                                 .then((state) {
-                             if(state){
-                               setState(() {
-                                 _dataString = customerID;
-                                 AwesomeDialog(
-                                   btnOkColor: Color(0XFFcbead6),// Colors.black,
-                                   dialogBackgroundColor: Colors.white,
-                                   dismissOnTouchOutside: false,
-                                   isDense: true,
-                                   context: context,
-                                   dialogType: DialogType.SUCCES,
-                                   animType: AnimType.BOTTOMSLIDE,
-                                   title: 'Success',
-                                   desc: 'QR Code is Created successful',
-                                   btnOkIcon: Icons.local_print_shop_outlined,
-                                   btnOkText: "print QR",
-                                   btnOkOnPress: () {
-                                     clearTextController();
-                                     Navigator.pop(context);
-                                     _captureAndSharePng();
-                                   },
-                                 )..show();
-
-                               });
-                             }else{
-                               AwesomeDialog(
-                                 btnOkColor: Colors.redAccent,// Colors.black,
-                                 dialogBackgroundColor: Colors.white,
-                                 dismissOnTouchOutside: false,
-                                 isDense: true,
-                                 context: context,
-                                 dialogType: DialogType.ERROR,
-                                 animType: AnimType.BOTTOMSLIDE,
-                                 title: 'Error',
-                                 desc: 'Please Try again',
-                                 btnOkIcon: Icons.local_print_shop_outlined,
-                                 btnOkText: "ok",
-                                 btnOkOnPress: () {
-                                   clearTextController();
-                                   Navigator.pop(context);
-
-                                 },
-                               )..show();
-                             }
+                              if (state) {
+                                setState(() {
+                                  _dataString = customerID;
+                                  AwesomeDialog(
+                                    btnOkColor:
+                                        Color(0XFFcbead6), // Colors.black,
+                                    dialogBackgroundColor: Colors.white,
+                                    dismissOnTouchOutside: false,
+                                    isDense: true,
+                                    context: context,
+                                    dialogType: DialogType.SUCCES,
+                                    animType: AnimType.BOTTOMSLIDE,
+                                    title: 'Success',
+                                    desc: 'QR Code is Created successful',
+                                    btnOkIcon: Icons.local_print_shop_outlined,
+                                    btnOkText: "print QR",
+                                    btnOkOnPress: () {
+                                      clearTextController();
+                                      Navigator.pop(context);
+                                      _printPDF();
+                                    },
+                                  )..show();
+                                });
+                              } else {
+                                AwesomeDialog(
+                                  btnOkColor: Colors.redAccent, // Colors.black,
+                                  dialogBackgroundColor: Colors.white,
+                                  dismissOnTouchOutside: false,
+                                  isDense: true,
+                                  context: context,
+                                  dialogType: DialogType.ERROR,
+                                  animType: AnimType.BOTTOMSLIDE,
+                                  title: 'Error',
+                                  desc: 'Please Try again',
+                                  btnOkIcon: Icons.local_print_shop_outlined,
+                                  btnOkText: "ok",
+                                  btnOkOnPress: () {
+                                    clearTextController();
+                                    Navigator.pop(context);
+                                  },
+                                )..show();
+                              }
                             });
                           },
                           borderRadius: BorderRadius.circular(32),
